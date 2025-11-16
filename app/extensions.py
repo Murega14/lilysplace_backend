@@ -84,6 +84,6 @@ def setup_logging(log_level='INFO', log_dir='logs', log_file='app.log', error_lo
     return logger
 
 
-logger = setup_logging(logger_name="App")
+logger = setup_logging()
     
     

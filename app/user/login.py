@@ -2,7 +2,7 @@ from datetime import timedelta
 from flask import Blueprint, make_response, request
 from flask_jwt_extended import create_access_token, get_jwt_identity
 from app.extensions import logger
-from app.user.models import User
+from app.models import User
 
 
 login_bp = Blueprint('login_bp', __name__, url_prefix="/api/v1")
@@ -15,7 +15,7 @@ def login():
         username = data.get('username')
         password = data.get('password')
         
-        user = User.query.filter_by(username=username)
+        user = User.query.filter_by(username=username).first()
         if user and user.check_password(password):
             expiry = timedelta(hours=2)
             access_token = create_access_token(identity=str(user.id), expires_delta=expiry)
@@ -34,5 +34,5 @@ def login():
             return make_response({'success': False, 'msg': 'invalid login credentials'}, 400)
     
     except Exception as e:
-        logger.error(f"an error occurred during login: {str(e)}", extra={'user_id': get_jwt_identity()})
+        logger.error(f"an error occurred during login: {str(e)}")
         return make_response({'success': False, 'msg': 'internal server error'}, 500)

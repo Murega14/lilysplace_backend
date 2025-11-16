@@ -2,7 +2,7 @@ from flask import Blueprint, make_response, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy import and_
 from app.models import db
-from app.user.models import Staff, User
+from app.models import Staff, User
 from app.extensions import logger
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 

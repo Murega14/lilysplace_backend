@@ -5,6 +5,9 @@ from flask_migrate import Migrate
 from app.commands import register_commands
 from app.models import db
 from config import Config
+from app.bar.app import bar_bp
+from app.user.login import login_bp
+from app.user.register import register_bp
 
 def create_app():
     app = Flask(__name__)
@@ -27,6 +30,11 @@ def create_app():
     migrate.init_app(app, db)
     jwt.init_app(app)
     register_commands(app)
+    
+    with app.app_context():
+        app.register_blueprint(bar_bp)
+        app.register_blueprint(login_bp)
+        app.register_blueprint(register_bp)
     
     return app
     
