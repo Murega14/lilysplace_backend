@@ -2,6 +2,7 @@ from flask import Flask
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
+from app.commands import register_commands
 from app.models import db
 from config import Config
 
@@ -25,6 +26,7 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)
+    register_commands(app)
     
     return app
     
