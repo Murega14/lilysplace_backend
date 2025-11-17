@@ -1,6 +1,0 @@
-2025-11-17 11:20 - ERROR    - User:2 - database error trying to create staff profile: (psycopg2.errors.UniqueViolation) duplicate key value violates unique constraint "uq_users_username"
-DETAIL:  Key (username)=(0712345678) already exists.
-
-[SQL: INSERT INTO users (username, role, password_hash, created_at, updated_at) VALUES (%(username)s, %(role)s, %(password_hash)s, CURRENT_TIMESTAMP, %(updated_at)s) RETURNING users.id, users.created_at]
-[parameters: {'username': '0712345678', 'role': 'bar', 'password_hash': 'scrypt:32768:8:1$Yxtx1j1vp63cUs7w$502acdc56d1bcc2777342007e5a0565ec4b24a1314981261b18d847df1a4943ff0ad4ef11d31192ce184210f579824b44abf862e70dffc0c28a8ff3dfa924a6f', 'updated_at': None}]
-(Background on this error at: https://sqlalche.me/e/20/gkpj)
