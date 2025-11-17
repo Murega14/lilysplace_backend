@@ -26,6 +26,10 @@ DRINK_TYPES = [
 
 DRINK_VOLUME = ['250 ml', '350 ml', '500 ml', '750 ml', '1L']
 
+SERVICE_TYPES = []
+
+PAYMENT_METHODS = ['mpesa', 'bank payment', 'cash']
+
 class User(AuditMixin, db.Model):
     __tablename__ = 'users'
     
@@ -65,3 +69,17 @@ class Drink(db.Model, AuditMixin):
     markup = db.Column(db.Float, nullable=False)
     shot_price = db.Column(db.Float, nullable=False)
     shot_quantity = db.Column(db.Integer, nullable=False)
+    
+class CarwashIncome(db.Model, AuditMixin):
+    __tablename__ = 'carwash_income'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    customer = db.Column(db.String, nullable=False)
+    staff_id = db.Column(db.Integer, db.ForeignKey('staff.id'), nullable=False)
+    amount_charged = db.Column(db.Float, nullable=False)
+    payment_method = db.Column(db.Enum(*PAYMENT_METHODS, name='carwash_payment_method'), nullable=True)
+    payment_reference_number = db.Column(db.String, unique=True, nullable=True)
+    service = db.Column(db.Enum(*SERVICE_TYPES, name='carwash_service_type'), nullable=False)
+    date = db.Column(db.DateTime, default=db.func.current_timestamp(), nullable=False)
+    
+    staff = db.relationship('Staff', backref='carwash_income')

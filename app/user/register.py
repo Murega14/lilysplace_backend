@@ -128,5 +128,4 @@ def edit_staff(staff_id: int):
         return make_response({'success': False, 'msg': 'internal server occured'}, 500)
         
     
-
             
