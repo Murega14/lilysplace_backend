@@ -1,48 +1,26 @@
-2025-11-16 23:26 - INFO     - User:SYSTEM - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+2025-11-17 11:19 - INFO     - User:SYSTEM - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
  * Running on http://127.0.0.1:5000
-2025-11-16 23:26 - INFO     - User:SYSTEM - [33mPress CTRL+C to quit[0m
-2025-11-16 23:27 - ERROR    - User:SYSTEM - Exception on /api/v1/login [POST]
-Traceback (most recent call last):
-  File "/home/muregzz/development/lilysplace_backend/app/user/login.py", line 19, in login
-    if user and user.check_password(password):
-                ^^^^^^^^^^^^^^^^^^^
-AttributeError: 'Query' object has no attribute 'check_password'
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/home/muregzz/development/lilysplace_backend/env/lib/python3.13/site-packages/flask/app.py", line 1511, in wsgi_app
-    response = self.full_dispatch_request()
-  File "/home/muregzz/development/lilysplace_backend/env/lib/python3.13/site-packages/flask/app.py", line 919, in full_dispatch_request
-    rv = self.handle_user_exception(e)
-  File "/home/muregzz/development/lilysplace_backend/env/lib/python3.13/site-packages/flask_cors/extension.py", line 176, in wrapped_function
-    return cors_after_request(app.make_response(f(*args, **kwargs)))
-                                                ~^^^^^^^^^^^^^^^^^
-  File "/home/muregzz/development/lilysplace_backend/env/lib/python3.13/site-packages/flask/app.py", line 917, in full_dispatch_request
-    rv = self.dispatch_request()
-  File "/home/muregzz/development/lilysplace_backend/env/lib/python3.13/site-packages/flask/app.py", line 902, in dispatch_request
-    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
-           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
-  File "/home/muregzz/development/lilysplace_backend/app/user/login.py", line 37, in login
-    logger.error(f"an error occurred during login: {str(e)}", extra={'user_id': get_jwt_identity()})
-                                                                                ~~~~~~~~~~~~~~~~^^
-  File "/home/muregzz/development/lilysplace_backend/env/lib/python3.13/site-packages/flask_jwt_extended/utils.py", line 63, in get_jwt_identity
-    return get_jwt().get(config.identity_claim_key, None)
-           ~~~~~~~^^
-  File "/home/muregzz/development/lilysplace_backend/env/lib/python3.13/site-packages/flask_jwt_extended/utils.py", line 29, in get_jwt
-    raise RuntimeError(
-    ...<2 lines>...
-    )
-RuntimeError: You must call `@jwt_required()` or `verify_jwt_in_request()` before using this method
-2025-11-16 23:27 - INFO     - User:SYSTEM - 127.0.0.1 - - [16/Nov/2025 23:27:36] "[35m[1mPOST /api/v1/login HTTP/1.1[0m" 500 -
-2025-11-16 23:28 - INFO     - User:SYSTEM - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+2025-11-17 11:19 - INFO     - User:SYSTEM - [33mPress CTRL+C to quit[0m
+2025-11-17 11:19 - INFO     - User:SYSTEM - 2 logged in
+2025-11-17 11:19 - INFO     - User:SYSTEM - 127.0.0.1 - - [17/Nov/2025 11:19:51] "POST /api/v1/login HTTP/1.1" 200 -
+2025-11-17 11:20 - INFO     - User:SYSTEM - 127.0.0.1 - - [17/Nov/2025 11:20:05] "[31m[1mPOST /api/v1/create-staff HTTP/1.1[0m" 401 -
+2025-11-17 11:20 - INFO     - User:SYSTEM - 127.0.0.1 - - [17/Nov/2025 11:20:17] "[35m[1mPOST /api/v1/create-staff HTTP/1.1[0m" 500 -
+2025-11-17 11:21 - INFO     - User:2 - new staff and user profile created: 4
+2025-11-17 11:21 - INFO     - User:SYSTEM - 127.0.0.1 - - [17/Nov/2025 11:21:44] "[35m[1mPOST /api/v1/create-staff HTTP/1.1[0m" 201 -
+2025-11-17 11:51 - INFO     - User:SYSTEM - 127.0.0.1 - - [17/Nov/2025 11:51:44] "[33mDELETE /api/v1/delete-staff/4 HTTP/1.1[0m" 404 -
+2025-11-17 11:52 - INFO     - User:2 - staff 2 profile has been deleted
+2025-11-17 11:52 - INFO     - User:SYSTEM - 127.0.0.1 - - [17/Nov/2025 11:52:08] "DELETE /api/v1/delete-staff/2 HTTP/1.1" 200 -
+2025-11-17 11:52 - INFO     - User:2 - new staff and user profile created: 5
+2025-11-17 11:52 - INFO     - User:SYSTEM - 127.0.0.1 - - [17/Nov/2025 11:52:42] "[35m[1mPOST /api/v1/create-staff HTTP/1.1[0m" 201 -
+2025-11-17 11:53 - INFO     - User:SYSTEM - 127.0.0.1 - - [17/Nov/2025 11:53:08] "[31m[1mPOST /api/v1/delete-staff/3 HTTP/1.1[0m" 405 -
+2025-11-17 11:53 - INFO     - User:2 - staff 3 profile has been deleted
+2025-11-17 11:53 - INFO     - User:SYSTEM - 127.0.0.1 - - [17/Nov/2025 11:53:12] "DELETE /api/v1/delete-staff/3 HTTP/1.1" 200 -
+2025-11-17 12:13 - INFO     - User:SYSTEM - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
  * Running on http://127.0.0.1:5000
-2025-11-16 23:28 - INFO     - User:SYSTEM - [33mPress CTRL+C to quit[0m
-2025-11-16 23:28 - ERROR    - User:SYSTEM - an error occurred during login: 'Query' object has no attribute 'check_password'
-2025-11-16 23:28 - INFO     - User:SYSTEM - 127.0.0.1 - - [16/Nov/2025 23:28:24] "[35m[1mPOST /api/v1/login HTTP/1.1[0m" 500 -
-2025-11-16 23:31 - INFO     - User:SYSTEM - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
- * Running on http://127.0.0.1:5000
-2025-11-16 23:31 - INFO     - User:SYSTEM - [33mPress CTRL+C to quit[0m
-2025-11-16 23:31 - INFO     - User:SYSTEM - 127.0.0.1 - - [16/Nov/2025 23:31:37] "POST /api/v1/login HTTP/1.1" 200 -
-2025-11-16 23:34 - INFO     - User:SYSTEM - 127.0.0.1 - - [16/Nov/2025 23:34:57] "[35m[1mPOST /api/v1/create-staff HTTP/1.1[0m" 201 -
-2025-11-16 23:35 - INFO     - User:SYSTEM - 127.0.0.1 - - [16/Nov/2025 23:35:53] "POST /api/v1/login HTTP/1.1" 200 -
+2025-11-17 12:13 - INFO     - User:SYSTEM - [33mPress CTRL+C to quit[0m
+2025-11-17 12:13 - INFO     - User:2 - new staff and user profile created: 6
+2025-11-17 12:13 - INFO     - User:SYSTEM - 127.0.0.1 - - [17/Nov/2025 12:13:39] "[35m[1mPOST /api/v1/create-staff HTTP/1.1[0m" 201 -
+2025-11-17 12:15 - INFO     - User:SYSTEM - 127.0.0.1 - - [17/Nov/2025 12:15:01] "[33mPUT /api/v1/edit-staff/6 HTTP/1.1[0m" 404 -
+2025-11-17 12:15 - INFO     - User:SYSTEM - 127.0.0.1 - - [17/Nov/2025 12:15:29] "[31m[1mPUT /api/v1/edit-staff/4 HTTP/1.1[0m" 400 -
+2025-11-17 12:15 - INFO     - User:2 - staff 4 details have been updated
+2025-11-17 12:15 - INFO     - User:SYSTEM - 127.0.0.1 - - [17/Nov/2025 12:15:35] "PUT /api/v1/edit-staff/4 HTTP/1.1" 200 -

@@ -3,14 +3,24 @@ from logging.handlers import TimedRotatingFileHandler
 import os
 from pathlib import Path
 
+from flask import has_request_context
+from flask_jwt_extended import get_jwt_identity, verify_jwt_in_request
+
 class UserContextFilter(logging.Filter):
     """ filter to add user context to log errors to avoid raising exceptions"""
-    def __init__(self):
-        super().__init__()
-        self.user_id = "SYSTEM"
-        
     def filter(self, record):
-        record.user_id = getattr(record, "user_id", self.user_id)
+        user_id = 'SYSTEM'
+        
+        if has_request_context():
+            try:
+                verify_jwt_in_request(optional=True)
+                current_user = get_jwt_identity()
+                if current_user:
+                    user_id = str(current_user)
+            except Exception:
+                pass
+        
+        record.user_id = user_id
         return True
 
 
@@ -36,10 +46,8 @@ def setup_logging(log_level='INFO', log_dir='logs', log_file='app.log', error_lo
         error_log_file (str): name of the main error log file Defaults to 'errors.log'.
     """
     log_level = log_level.upper()
-    numeric_level = getattr(logging, log_level, None)
-    if not isinstance(numeric_level, int):
-        log_level = 'INFO'
-        numeric_level = logging.INFO
+    numeric_level = getattr(logging, log_level, logging.INFO)
+    
         
     log_dir_path = Path(log_dir)
     app_log_path = str(log_dir_path / log_file)
@@ -49,9 +57,8 @@ def setup_logging(log_level='INFO', log_dir='logs', log_file='app.log', error_lo
     ensure_log_directory(error_log_path)
     
     logger = logging.getLogger()
-    
-    if logger.handlers:
-        return logger
+    for handler in logger.handlers[:]:
+        logger.removeHandler(handler)
     
     formatter = logging.Formatter(
         fmt='%(asctime)s - %(levelname)-8s - User:%(user_id)s - %(message)s',
@@ -69,8 +76,13 @@ def setup_logging(log_level='INFO', log_dir='logs', log_file='app.log', error_lo
         filename=app_log_path, when='midnight', interval=1, backupCount=30, encoding='utf-8'
     )
     file_handler.setFormatter(formatter)
-    file_handler.setLevel(numeric_level)
+    file_handler.setLevel(logging.INFO)
     file_handler.addFilter(user_filter)
+    
+    def app_log_filter(record):
+        return record.levelno < logging.ERROR
+    
+    file_handler.addFilter(app_log_filter)
     logger.addHandler(file_handler)
     
     error_handler = TimedRotatingFileHandler(
@@ -80,6 +92,8 @@ def setup_logging(log_level='INFO', log_dir='logs', log_file='app.log', error_lo
     error_handler.setLevel(logging.ERROR)
     error_handler.addFilter(user_filter)
     logger.addHandler(error_handler)
+    
+    logger.setLevel(logging.DEBUG)
     
     return logger
 

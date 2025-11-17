@@ -1,5 +1,5 @@
 from flask import Blueprint, make_response, request
-from flask_jwt_extended import get_jwt_identity, jwt_required
+from flask_jwt_extended import current_user, get_jwt_identity, jwt_required
 from sqlalchemy import and_
 from app.models import db
 from app.models import Staff, User
@@ -37,7 +37,7 @@ def register_staff():
             db.session.add(new_staff)
             db.session.commit()
             
-            logger.info(f"new staff and user profile created: {new_user.id}", extra={'user_id': get_jwt_identity()})
+            logger.info(f"new staff and user profile created: {new_staff.id}", extra={'user_id': get_jwt_identity()})
             return make_response({'success': True, 'msg': 'new staff and user profile created successfully'}, 201)
         
         except SQLAlchemyError as e:
@@ -84,6 +84,49 @@ def delete_user(staff_id: int):
     except Exception as e:
         logger.error(f"an error occured trying to delete staff profile: {str(e)}", extra={'user_id': get_jwt_identity()})
         return make_response({'success': False, 'msg': 'internal server error'}, 500)
+    
+@register_bp.route('/edit-staff/<int:staff_id>', methods=['PUT'])
+@jwt_required()
+def edit_staff(staff_id: int):
+    try:
+        staff = Staff.query.get(staff_id)
+        if not staff:
+            return make_response({"success": False, "msg": "staff profile does not exist"}, 404)
+        
+        data = request.get_json()
+        
+        try:
+            if "name" in data:
+                staff.name = data['name'].strip()
+            
+            if "id_number" in data:
+                if len(data["id_number"]) < 8:
+                    return make_response({'success': False, 'msg': 'id number cannot be more than 8 digits'}, 400)
+                staff.id_number = data['id_number']
+            
+            if "phone_number" in data:
+                if len(data['phone_number']) > 10:
+                    return make_response({'success': False, 'msg': 'phone number cannot be more than 10 digits, use 07 or 011 as the format'}, 400)
+                staff.phone_number = data['phone_number']
+            
+            db.session.commit()
+            logger.info(f"staff {staff.id} details have been updated", extra={'user_id': get_jwt_identity()})
+            return make_response({'success': True, 'msg': 'staff details have been updated succesfully'}, 200)
+        
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            logger.error(f"database error occured when trying to update staff details: {str(e)}", extra={'user_id': get_jwt_identity()})
+            return make_response({'success': False, 'msg': 'failed to update staff details, please try again'}, 500)
+        
+        except IntegrityError as e:
+            db.session.rollback()
+            logger.error(f"unique constraint violation when trying to update staff details: {str(e)}", extra={'user_id': get_jwt_identity()})
+            return make_response({'success': False, 'msg': 'phone number or id number already exists for another staff member'}, 500)
+        
+    except Exception as e:
+        logger.error(f"an error occured trying to update staff details: {str(e)}", extra={'user_id': get_jwt_identity()})
+        return make_response({'success': False, 'msg': 'internal server occured'}, 500)
+        
     
 
             
