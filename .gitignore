@@ -2,5 +2,5 @@
 env/
 .vscode/
 __pycache__/
-logs/
+logs/*.log
 *.log
