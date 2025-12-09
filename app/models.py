@@ -30,6 +30,8 @@ SERVICE_TYPES = []
 
 PAYMENT_METHODS = ['mpesa', 'bank payment', 'cash']
 
+SALE_TYPE = ['retail', 'wholesale']
+
 class User(AuditMixin, db.Model):
     __tablename__ = 'users'
     
@@ -68,7 +70,7 @@ class Drink(db.Model, AuditMixin):
     volume = db.Column(db.Enum(*DRINK_VOLUME, name='drink_volume'), nullable=False)
     markup = db.Column(db.Float, nullable=False)
     shot_price = db.Column(db.Float, nullable=False)
-    shot_quantity = db.Column(db.Integer, nullable=False)
+    shot_quantity = db.Column(db.Integer, nullable=False, default=25)
     
 class CarwashIncome(db.Model, AuditMixin):
     __tablename__ = 'carwash_income'
@@ -83,3 +85,53 @@ class CarwashIncome(db.Model, AuditMixin):
     date = db.Column(db.DateTime, default=db.func.current_timestamp(), nullable=False)
     
     staff = db.relationship('Staff', backref='carwash_income')
+    
+class OpenBottle(db.Model, AuditMixin):
+    __tablename__ = 'open_bottle'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    drink_id = db.Column(db.Integer, db.ForeignKey('drinks.id'), nullable=False, unique=True)
+    shots_remaining = db.Column(db.Integer, nullable=False)
+    
+    drink = db.relationship('Drink', backref='open_bottle')
+    
+class DrinkPurchases(db.Model, AuditMixin):
+    __tablename__ = 'drink_purchases'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    drink_id = db.Column(db.Integer, db.ForeignKey('drinks.id'), nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)
+    unit_price = db.Column(db.Float, nullable=False)
+    payment_method = db.Column(db.Enum(*PAYMENT_METHODS, name='drink_purchase_payment_method'), nullable=False)
+    reference_number = db.Column(db.String, unique=True, nullable=True)
+    supplier = db.Column(db.String)
+    
+    drink = db.relationship('Drink', backref='drink_purchases')
+    
+class TotSales(db.Model, AuditMixin):
+    __tablename__ = 'tot_sales'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    open_bottle_id = db.Column(db.Integer, db.ForeignKey('open_bottle.id'), nullable=False)
+    shot_quantity = db.Column(db.Integer, nullable=False)
+    price = db.Column(db.Float, nullable=False)
+    payment_method = db.Column(db.Enum(*PAYMENT_METHODS, name='tot_payment_method'), nullable=False)
+    reference_number = db.Column(db.String, nullable=True, unique=True)
+    sold_by = db.Column(db.Integer, db.ForeignKey('staff.id'), nullable=False)
+    
+    open_bottle = db.relationship('OpenBottle', backref='tot_sales')
+    
+class DrinkSales(db.Model, AuditMixin):
+    __tablename__ = 'drink_sales'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    drink_id = db.Column(db.Integer, db.ForeignKey('drinks.id'), nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)
+    sale_type = db.Column(db.Enum(*SALE_TYPE, name='drink_sale_type'), nullable=False)
+    payment_method = db.Column(db.Enum(*PAYMENT_METHODS, name='drink_payment_method'), nullable=False)
+    reference_number = db.Column(db.String, nullable=True, unique=True)
+    amount = db.Column(db.Float, nullable=False)
+    sold_by = db.Column(db.Integer, db.ForeignKey('staff.id'), nullable=True)
+    
+    drink = db.relationship('Drink', backref='drink_sales')
+    staff = db.relationship('Staff', backref='drink_sales')
